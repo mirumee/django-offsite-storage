@@ -14,4 +14,5 @@ AWS_MEDIA_BUCKET_NAME = getattr(settings, 'AWS_MEDIA_BUCKET_NAME')
 AWS_HOST_URL = 'https://%(bucket_name)s.s3.amazonaws.com/'
 AWS_POLICY = 'public-read'
 
-IGNORE_FILES = ['*.less', '*.scss']
+IGNORE_FILES = getattr(settings, 'OFFSITE_STORAGE_IGNORE_FILES',
+                       ['*.less', '*.scss', 'components'])
