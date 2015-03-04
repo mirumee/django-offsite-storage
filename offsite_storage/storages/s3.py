@@ -41,6 +41,11 @@ class CachedS3FilesStorage(ManifestStaticFilesStorage):
                 paths, dry_run=False, **options)
         self.hashed_files = OrderedDict()
         for name, hashed_name, processed in post_process_generator:
+            if not hashed_name:
+                logger.warning(
+                    "Hashed name does not exist. Processed file '%s'. %s",
+                    name, processed)
+                continue
             hash_key = self.hash_key(name)
             self.hashed_files[hash_key] = hashed_name
             processed = False
@@ -58,6 +63,14 @@ class CachedS3FilesStorage(ManifestStaticFilesStorage):
                 processed = True
             yield name, hashed_name, processed
         self.save_manifest()
+
+    def hashed_name(self, name, content=None):
+        try:
+            return super(CachedS3FilesStorage, self).hashed_name(
+                name, content=content)
+        except ValueError:
+            logger.warning(u'%s does not exist', name)
+            return name
 
 
 class S3MediaStorage(StaticFilesStorage):
