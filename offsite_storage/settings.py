@@ -15,4 +15,4 @@ AWS_HOST_URL = 'https://%(bucket_name)s.s3.amazonaws.com/'
 AWS_POLICY = 'public-read'
 
 IGNORE_FILES = getattr(settings, 'OFFSITE_STORAGE_IGNORE_FILES',
-                       ['*.less', '*.scss', 'components'])
+                       ['*.less', '*.scss', '*.txt', 'components'])
