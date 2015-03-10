@@ -2,11 +2,13 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 import logging
 import mimetypes
+from tempfile import TemporaryFile
 
 from boto.s3.connection import S3Connection
 from django.contrib.staticfiles.storage import (
     ManifestStaticFilesStorage, StaticFilesStorage)
 from django.core.exceptions import ImproperlyConfigured
+from django.core.files import File
 
 from .. import settings
 
@@ -77,7 +79,8 @@ class S3MediaStorage(StaticFilesStorage):
 
     bucket_name = settings.AWS_MEDIA_BUCKET_NAME
 
-    def _save(self, name, content):
+    @property
+    def bucket(self):
         try:
             aws_keys = (
                 settings.AWS_MEDIA_ACCESS_KEY_ID,
@@ -87,8 +90,10 @@ class S3MediaStorage(StaticFilesStorage):
                 'Static collection requires '
                 'AWS_MEDIA_ACCESS_KEY_ID and AWS_MEDIA_SECRET_ACCESS_KEY.')
         conn = S3Connection(*aws_keys)
-        bucket = conn.get_bucket(self.bucket_name)
-        file_key = bucket.new_key(name)
+        return conn.get_bucket(self.bucket_name)
+
+    def _save(self, name, content):
+        file_key = self.bucket.new_key(name)
 
         mime_type, encoding = mimetypes.guess_type(name)
         headers = {
@@ -99,6 +104,11 @@ class S3MediaStorage(StaticFilesStorage):
             content, headers=headers, policy=settings.AWS_POLICY, rewind=True)
 
         return super(S3MediaStorage, self)._save(name, content)
+
+    def _open(self, name, mode='rb'):
+        temp_file = TemporaryFile()
+        self.bucket.get_key(name).get_file(temp_file)
+        return File(temp_file)
 
     def url(self, name):
         host = settings.AWS_HOST_URL % {'bucket_name': self.bucket_name}
