@@ -103,7 +103,7 @@ class S3MediaStorage(StaticFilesStorage):
         file_key.set_contents_from_file(
             content, headers=headers, policy=settings.AWS_POLICY, rewind=True)
 
-        return super(S3MediaStorage, self)._save(name, content)
+        return name
 
     def _open(self, name, mode='rb'):
         temp_file = TemporaryFile()
