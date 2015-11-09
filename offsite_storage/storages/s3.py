@@ -113,3 +113,12 @@ class S3MediaStorage(StaticFilesStorage):
     def url(self, name):
         host = settings.AWS_HOST_URL % {'bucket_name': self.bucket_name}
         return host + name.split('?')[0]
+
+    def listdir(self, name):
+        raise NotImplementedError()
+
+    def modified_time(self, name):
+        raise NotImplementedError()
+
+    def path(self, name):
+        raise NotImplementedError()
