@@ -114,6 +114,9 @@ class S3MediaStorage(StaticFilesStorage):
         host = settings.AWS_HOST_URL % {'bucket_name': self.bucket_name}
         return host + name.split('?')[0]
 
+    def exists(self, name):
+        return self.bucket.new_key(name).exists()
+
     def listdir(self, name):
         raise NotImplementedError()
 
