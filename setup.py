@@ -8,7 +8,7 @@ setup(
     author_email='hello@mirumee.com',
     description='Cloud static and media file storage suitable for app containers',
     license='MIT',
-    version='0.0.7',
+    version='0.0.8',
     url='https://github.com/mirumee/django-offsite-storage',
     packages=find_packages(),
     include_package_data=True,

@@ -11,9 +11,9 @@ AWS_MEDIA_SECRET_ACCESS_KEY = getattr(
     settings, 'AWS_MEDIA_SECRET_ACCESS_KEY', AWS_SECRET_ACCESS_KEY)
 AWS_MEDIA_BUCKET_NAME = getattr(settings, 'AWS_MEDIA_BUCKET_NAME')
 
-AWS_S3_ENDPOINT_URL = getattr(
-    settings, 'AWS_S3_ENDPOINT_URL', 's3.amazonaws.com')
-AWS_HOST_URL = 'https://%%(bucket_name)s.%s/' % AWS_S3_ENDPOINT_URL
+AWS_S3_ENDPOINT = getattr(
+    settings, 'AWS_S3_ENDPOINT', 's3.amazonaws.com')
+AWS_HOST_URL = 'https://%%(bucket_name)s.%s/' % AWS_S3_ENDPOINT
 AWS_POLICY = 'public-read'
 
 IGNORE_FILES = getattr(settings, 'OFFSITE_STORAGE_IGNORE_FILES',

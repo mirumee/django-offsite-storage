@@ -33,7 +33,7 @@ class CachedS3FilesStorage(ManifestStaticFilesStorage):
             raise ImproperlyConfigured(
                 'Static collection requires '
                 'AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY.')
-        conn = S3Connection(*aws_keys, host=settings.AWS_S3_ENDPOINT_URL)
+        conn = S3Connection(*aws_keys, host=settings.AWS_S3_ENDPOINT)
         bucket = conn.get_bucket(self.bucket_name)
 
         bucket_files = [key.name for key in bucket.list()]

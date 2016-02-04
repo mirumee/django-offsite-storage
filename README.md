@@ -33,4 +33,4 @@ In the case when you use a different s3 account for your media files, set the fo
  * AWS_MEDIA_ACCESS_KEY_ID
  * AWS_MEDIA_SECRET_ACCESS_KEY
 
-
+To force boto to use a particular S3 host set AWS_S3_ENDPOINT (default is `s3.amazonaws.com`).
