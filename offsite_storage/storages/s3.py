@@ -108,7 +108,9 @@ class S3MediaStorage(StaticFilesStorage):
     def _open(self, name, mode='rb'):
         temp_file = TemporaryFile()
         self.bucket.get_key(name).get_file(temp_file)
-        return File(temp_file)
+        media_file = File(temp_file)
+        media_file.seek(0)
+        return media_file
 
     def url(self, name):
         host = settings.AWS_HOST_URL % {'bucket_name': self.bucket_name}
