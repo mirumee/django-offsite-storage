@@ -15,7 +15,6 @@ from .. import settings
 
 logger = logging.getLogger(__name__)
 
-
 class CachedS3FilesStorage(ManifestStaticFilesStorage):
 
     bucket_name = settings.AWS_STATIC_BUCKET_NAME
@@ -78,9 +77,15 @@ class CachedS3FilesStorage(ManifestStaticFilesStorage):
 class S3MediaStorage(StaticFilesStorage):
 
     bucket_name = settings.AWS_MEDIA_BUCKET_NAME
+    _bucket = None
 
     @property
     def bucket(self):
+        if not self._bucket:
+            self._bucket = self._get_bucket()
+        return self._bucket
+
+    def _get_bucket(self):
         try:
             aws_keys = (
                 settings.AWS_MEDIA_ACCESS_KEY_ID,
@@ -94,7 +99,6 @@ class S3MediaStorage(StaticFilesStorage):
 
     def _save(self, name, content):
         file_key = self.bucket.new_key(name)
-
         mime_type, encoding = mimetypes.guess_type(name)
         headers = {
             'Content-Type': mime_type or 'application/octet-stream',
@@ -117,13 +121,17 @@ class S3MediaStorage(StaticFilesStorage):
         return host + name.split('?')[0]
 
     def exists(self, name):
-        return self.bucket.new_key(name).exists()
+        return self.bucket.get_key(name, validate=True)
 
     def listdir(self, name):
         raise NotImplementedError()
 
     def modified_time(self, name):
         raise NotImplementedError()
+
+    def size(self, name):
+        key = self.bucket.get_key(name)
+        return key.size
 
     def path(self, name):
         raise NotImplementedError()
